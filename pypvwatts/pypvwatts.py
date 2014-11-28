@@ -7,8 +7,20 @@ from .pvwattserror import PVWattsError, PVWattsValidationError
 import requests
 from .__version__ import VERSION
 
+import sys
+
 import functools
 
+if sys.version_info >= (3, 0):
+    numerical_types = (int, float)
+    numerical_str = ' must be int or float'
+    str_types = (str)
+    str_str = ' must be str'
+elif sys.version_info <= (3, 0):
+    numerical_types = (int, long, float)
+    numerical_str = ' must be int, long, or float'
+    str_types = (str, unicode)
+    str_str = ' must be str or unicode'
 
 # this decorator lets me use methods as both static and instance methods
 class omnimethod(object):
@@ -27,6 +39,7 @@ class PVWatts():
     PVWATTS_QUERY_URL = 'http://developer.nrel.gov/api/pvwatts/v4.json'
     api_key = 'DEMO_KEY'
 
+
     def __init__(self, api_key='DEMO_KEY', proxies=None):
         PVWatts.api_key = api_key
         self.proxies = proxies
@@ -36,8 +49,9 @@ class PVWatts():
         if system_size is None:
             return
 
-        if not isinstance(system_size, (int, long, float)):
-            raise PVWattsValidationError('system_size must be int, long or float')
+        #if not isinstance(system_size, (int, long, float)):
+        if not isinstance(system_size, numerical_types):
+            raise PVWattsValidationError('system_size' + numerical_str)
 
         if not (0.05 <= system_size and system_size <= 500000):
             raise PVWattsValidationError('system_size must be >= 0.05 and <= 500000')
@@ -49,8 +63,8 @@ class PVWatts():
         if lat is None:
             return
 
-        if not isinstance(lat, (int, long, float)):
-            raise PVWattsValidationError('lat must be int, long or float')
+        if not isinstance(lat, numerical_types):
+            raise PVWattsValidationError('lat' + numerical_str)
 
         if not (-90 <= lat and lat <= 90):
             raise PVWattsValidationError('lat must be >= -90 and <= 90')
@@ -62,8 +76,8 @@ class PVWatts():
         if lon is None:
             return
 
-        if not isinstance(lon, (int, long, float)):
-            raise PVWattsValidationError('lon must be int, long or float')
+        if not isinstance(lon, numerical_types):
+            raise PVWattsValidationError('lon' + numerical_str)
 
         if not (-180 <= lon and lon <= 180):
             raise PVWattsValidationError('lon must be >= -90 and <= 90')
@@ -75,8 +89,8 @@ class PVWatts():
         if dataset is None:
             return
 
-        if not isinstance(dataset, (str, unicode)):
-            raise PVWattsValidationError('dataset must be str or unicode')
+        if not isinstance(dataset, str_types):
+            raise PVWattsValidationError('dataset' + str_str)
 
         if dataset not in ('tmy2', 'tmy3', 'intl'):
             raise PVWattsValidationError('dataset must be \'tmy2\', \'tmy3\' or \'intl\'')
@@ -88,8 +102,8 @@ class PVWatts():
         if timeframe is None:
             return
 
-        if not isinstance(timeframe, (str, unicode)):
-            raise PVWattsValidationError('timeframe must be str or unicode')
+        if not isinstance(timeframe, str_types):
+            raise PVWattsValidationError('timeframe' + str_str)
 
         if timeframe not in ('hourly', 'monthly'):
             raise PVWattsValidationError('dataset must be \'hourly\' or \'monthly\'')
@@ -101,8 +115,8 @@ class PVWatts():
         if azimuth is None:
             return
 
-        if not isinstance(azimuth, (int, long, float)):
-            raise PVWattsValidationError('azimuth must be int, long or float')
+        if not isinstance(azimuth, numerical_types):
+            raise PVWattsValidationError('azimuth' + numerical_str)
 
         if not (0 <= azimuth and azimuth <= 360):
             raise PVWattsValidationError('azimuth must be >= 0 and <= 360')
@@ -114,8 +128,8 @@ class PVWatts():
         if derate is None:
             return
 
-        if not isinstance(derate, (int, long, float)):
-            raise PVWattsValidationError('derate must be int, long or float')
+        if not isinstance(derate, numerical_types):
+            raise PVWattsValidationError('derate' + numerical_str)
 
         if not (0 <= derate and derate <= 1):
             raise PVWattsValidationError('derate must be >= 0 and <= 1')
@@ -127,8 +141,8 @@ class PVWatts():
         if tilt is None:
             return
 
-        if not isinstance(tilt, (int, long, float)):
-            raise PVWattsValidationError('tilt must be int, long or float')
+        if not isinstance(tilt, numerical_types):
+            raise PVWattsValidationError('tilt' + numerical_str)
 
         return tilt
 
@@ -137,9 +151,8 @@ class PVWatts():
         if tilt_eq_lat is None:
             return
 
-        if not isinstance(tilt_eq_lat, (int, long, float)):
-            raise PVWattsValidationError('tilt_eq_lat must be int, long or float')
-
+        if not isinstance(tilt_eq_lat, numerical_types):
+            raise PVWattsValidationError('tilt_eq_lat' + numerical_str)
         if tilt_eq_lat not in (0, 1):
             raise PVWattsValidationError('tilt_eq_lat must be 0 or 1')
 
@@ -150,8 +163,8 @@ class PVWatts():
         if track_mode is None:
             return
 
-        if not isinstance(track_mode, (int, long, float)):
-            raise PVWattsValidationError('track_mode must be int, long or float')
+        if not isinstance(track_mode, numerical_types):
+            raise PVWattsValidationError('track_mode' + numerical_str)
 
         if track_mode not in (0, 1, 2):
             raise PVWattsValidationError('track_mode must be 0, 1 or 2')
@@ -163,8 +176,8 @@ class PVWatts():
         if inoct is None:
             return
 
-        if not isinstance(inoct, (int, long, float)):
-            raise PVWattsValidationError('inoct must be int, long or float')
+        if not isinstance(inoct, numerical_types):
+            raise PVWattsValidationError('inoct' + numerical_str)
 
         if not (30 <= inoct and inoct <= 80):
             raise PVWattsValidationError('inoct must be >= 30 and <= 80')
@@ -176,8 +189,8 @@ class PVWatts():
         if gamma is None:
             return
 
-        if not isinstance(gamma, (int, long, float)):
-            raise PVWattsValidationError('gamma must be int, long or float')
+        if not isinstance(gamma, numerical_types):
+            raise PVWattsValidationError('gamma' + numerical_str)
 
         if not (-2 <= gamma and gamma <= -0.01):
             raise PVWattsValidationError('gamma must be >= -2 and <= -0.01')
