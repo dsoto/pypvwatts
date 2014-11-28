@@ -1,2 +1,2 @@
-from .pypvwatts import PVWatts
+from .pypvwatts import PVWatts, PVWattsResult
 from .pvwattserror import PVWattsValidationError
